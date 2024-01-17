@@ -38,21 +38,11 @@ fn main() -> anyhow::Result<()> {
                 found_in_file
             };
             if file_names.par_iter().any(found_mention) {
-                not_found.lock().unwrap().push(search_regex)
-            } else {
                 found.lock().unwrap().push(search_regex)
+            } else {
+                not_found.lock().unwrap().push(search_regex)
             }
         });
-
-    // let filtered = urls.into_par_iter()
-    //     .progress_count(urls_count as u64)
-    //     .filter(|search_regex| {
-    //         file_names.par_iter().any(|file| {
-    //             let file_contents = sources.read_file(file);
-    //             let found_in_file = file_contents.into_iter().par_bridge().any(|line| search_regex.find(line.as_str()).is_some());
-    //             found_in_file
-    //         })
-    //     }).collect::<Vec<Regex>>();
 
     println!("Preparing report on not_found...");
     let report_not_found = github_swagger.report_on_urls(&not_found.lock().unwrap());
